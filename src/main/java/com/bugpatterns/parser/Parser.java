@@ -1,4 +1,4 @@
-package parser;
+package com.bugpatterns.parser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,7 +11,10 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IfStatement;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
  
 public class Parser {
@@ -25,7 +28,7 @@ public class Parser {
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
  
 		cu.accept(new ASTVisitor() {
- 
+			 
 			Set names = new HashSet();
  
 			public boolean visit(VariableDeclarationFragment node) {
@@ -37,11 +40,42 @@ public class Parser {
 			}
  
 			public boolean visit(SimpleName node) {
+				System.out.println(node);
 				if (this.names.contains(node.getIdentifier())) {
 					System.out.println("Usage of '" + node + "' at line "
 							+ cu.getLineNumber(node.getStartPosition()));
 				}
 				return true;
+			}
+			@Override
+			public boolean visit(IfStatement node) {
+				System.out.println("If Stattaement" + node.getExpression().resolveConstantExpressionValue());
+				if(node.getExpression().resolveConstantExpressionValue().equals("true")) {
+					System.out.println("Error");
+				}
+			    Statement thenBranch = node.getThenStatement(); 
+			    if (thenBranch != null) {
+			        thenBranch.accept(new ASTVisitor(false) {
+			            @Override
+			            public boolean visit(MethodInvocation node) {
+			                // handle method invocation in the then branch
+			                return true; // false, if nested method invocations should be ignored
+			            }
+			        });
+			    }
+
+			    Statement elseBranch = node.getElseStatement(); 
+			    if (elseBranch != null) {
+			        elseBranch.accept(new ASTVisitor(false) {
+			            @Override
+			            public boolean visit(MethodInvocation node) {
+			                // handle method invocation in the else branch
+			                return true; // false, if nested method invocations should be ignored
+			            }
+			        });
+			    }
+
+			    return true; // false, if nested if statements should be ignored
 			}
 		});
  
@@ -69,8 +103,8 @@ public class Parser {
 	//loop directory to get file list
 	public static void ParseFilesInDir() throws IOException{
 		File dirs = new File(".");
-		String dirPath = dirs.getCanonicalPath() + File.separator+"src"+File.separator;
- 
+		String dirPath = dirs.getCanonicalPath() + File.separator+"src"+File.separator+"resources"+File.separator; 
+		System.out.println(dirPath);
 		File root = new File(dirPath);
 		//System.out.println(rootDir.listFiles());
 		File[] files = root.listFiles ( );
