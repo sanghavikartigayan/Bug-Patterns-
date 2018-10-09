@@ -1,5 +1,3 @@
-import java.util.HashMap;
-
 public class example {
 
 	    public static void main(String[] args) {
@@ -13,6 +11,9 @@ public class example {
 	        if (!value) {
 	            System.out.println("B");
 	        }
+	    }
+	    public void equals(){
+	    	System.out.println("hello");
 	    }
 	
 

@@ -8,10 +8,14 @@ import java.util.HashSet;
 import java.util.Set;
  
 import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IfStatement;
+import org.eclipse.jdt.core.dom.MarkerAnnotation;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
@@ -38,6 +42,14 @@ public class Parser {
 						+ cu.getLineNumber(name.getStartPosition()));
 				return false; // do not continue 
 			}
+			
+			public boolean visit(MethodDeclaration inv){
+				SimpleName name = inv.getName();
+				
+				System.out.println(name);
+				return false;
+				
+			}
  
 			public boolean visit(SimpleName node) {
 				System.out.println(node);
@@ -49,8 +61,9 @@ public class Parser {
 			}
 			@Override
 			public boolean visit(IfStatement node) {
-				System.out.println("If Stattaement" + node.getExpression().resolveConstantExpressionValue());
-				if(node.getExpression().resolveConstantExpressionValue().equals("true")) {
+				node.getExpression();
+				System.out.println("If Statement " + ASTNode.BOOLEAN_LITERAL);
+				if(node.getExpression().toString().equals("true")) {
 					System.out.println("Error");
 				}
 			    Statement thenBranch = node.getThenStatement(); 
@@ -109,7 +122,7 @@ public class Parser {
 		//System.out.println(rootDir.listFiles());
 		File[] files = root.listFiles ( );
 		String filePath = null;
- 
+
 		 for (File f : files ) {
 			 filePath = f.getAbsolutePath();
 			 if(f.isFile()){
