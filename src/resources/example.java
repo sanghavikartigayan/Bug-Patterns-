@@ -11,6 +11,17 @@ public class example {
 	        if (!value) {
 	            System.out.println("B");
 	        }
+	        
+	        Integer[] a = new Integer[5];
+	        try {
+	        	System.out.print(a[5]);
+	        }
+	        catch(ArrayIndexOutOfBoundsException e) {
+	        	int i = 1;
+//	        	throw e;
+//	        	System.out.println("Array Index out of bounds exception");
+//	        	e.printStackTrace();
+	        }
 	    }
 	    public void equals(){
 	    	System.out.println("hello");
