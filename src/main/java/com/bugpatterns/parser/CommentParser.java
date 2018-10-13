@@ -1,5 +1,7 @@
 package com.bugpatterns.parser;
 
+import java.util.Map;
+
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.BlockComment;
@@ -11,12 +13,15 @@ public class CommentParser extends ASTVisitor {
     CompilationUnit compilationUnit;
 
     private String[] source;
+    
+    Map<Integer, String> comments; 
 
-    public CommentParser(CompilationUnit compilationUnit, String[] source) {
+    public CommentParser(CompilationUnit compilationUnit, String[] source, Map<Integer, String> comments) {
 
         super();
         this.compilationUnit = compilationUnit;
         this.source = source;
+        this.comments = comments;
     }
 
     public boolean visit(LineComment node) {
@@ -24,8 +29,10 @@ public class CommentParser extends ASTVisitor {
         int startLineNumber = compilationUnit.getLineNumber(node.getStartPosition()) - 1;
         String lineComment = source[startLineNumber].trim();
 
-        System.out.println(lineComment);
-
+//        System.out.println(lineComment);
+        
+        comments.put(startLineNumber, lineComment);
+        
         return true;
     }
 
@@ -44,8 +51,10 @@ public class CommentParser extends ASTVisitor {
                 blockComment.append("\n");
             }
         }
+        
+        comments.put(startLineNumber, blockComment.toString());
 
-        System.out.println(blockComment.toString());
+//        System.out.println(blockComment.toString());
 
         return true;
     }
