@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -33,12 +35,14 @@ public class Parser {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource(str.toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		
+		final Map<Integer, String> comments = new HashMap<Integer, String>();
  
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);			
 		
 		for (Comment comment : (List<Comment>) cu.getCommentList()) {
 
-		    comment.accept(new CommentParser(cu, str.split("\n")));
+		    comment.accept(new CommentParser(cu, str.split("\n"), comments));
 		}
 		
 		cu.accept(new ASTVisitor() {
@@ -72,17 +76,25 @@ public class Parser {
 				return true;				
 			}
 			
-			public boolean visit(CatchClause node) {
-				parseSubTree(node.getBody());
-				String body = "";
-				System.out.println("Empty Exception: There is no debug when an exception occurs");
-				if(body.indexOf("TODO") >= 0 || body.indexOf("FIXME") >= 0) {
-					System.out.println("Unfinished exception handling code: There's a TODO or a FIXME in the catch block");
-				}
+			public boolean visit(CatchClause node) {				
+				int startLineNumber = cu.getLineNumber(node.getStartPosition()) - 1;
+		        int endLineNumber = cu.getLineNumber(node.getStartPosition() + node.getLength()) - 1;
+		        parseSubTree(node.getBody(), startLineNumber);
+		        checkUnfinishedExceptionHandling(startLineNumber, endLineNumber);
 				return true;				
-			}		
+			}
 			
-			public boolean parseSubTree(Block node) {
+			public void checkUnfinishedExceptionHandling(int startLineNumber, int endLineNumber) {
+				for(Integer i : comments.keySet()) {
+					if(i >= startLineNumber && i <= endLineNumber) {
+						if(comments.get(i).indexOf("TODO") >= 0 || comments.get(i).indexOf("FIXME") >= 0) {
+							System.out.println("Line number: " + startLineNumber + " - Unfinished exception handling code: There's a TODO or a FIXME in the catch block");
+						}
+					}
+				}
+			}
+			
+			public boolean parseSubTree(Block node, int startLineNumber) {
 				boolean isEmptyException = true;
 				for(Object s : node.statements()) {
 					if(s instanceof ExpressionStatement) {						
@@ -105,7 +117,7 @@ public class Parser {
 					}
 				}
 				if(isEmptyException) {
-					System.out.println("Empty Exception: There is no debug when an exception occurs");
+					System.out.println("Line number: " + startLineNumber + " - Empty Exception: There is no debug when an exception occurs");
 				}	
 				else {
 					System.out.println("Debug present");
