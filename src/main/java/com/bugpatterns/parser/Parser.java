@@ -4,12 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.instrument.ClassDefinition;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -19,6 +21,7 @@ import org.eclipse.jdt.core.dom.CatchClause;
 import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
+import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -30,6 +33,9 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
  
 public class Parser {
  
+	//static boolean check = false;
+	static boolean equalsPresent = false;
+	static boolean hashCodePresent = false;
 	//use ASTParse to parse string
 	public static void parse(String str) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
@@ -46,22 +52,43 @@ public class Parser {
 		}
 		
 		cu.accept(new ASTVisitor() {
-			 
-			Set names = new HashSet();		
+			
+			Set names = new HashSet();
+			Set<SimpleName> methodNames = new HashSet<SimpleName>();
+			
+			public boolean visit(ClassDefinition node){
+				return true;
+			}
  
 			public boolean visit(VariableDeclarationFragment node) {
 				SimpleName name = node.getName();
-				this.names.add(name.getIdentifier());
+				names.add(name.getIdentifier());
 				System.out.println("Declaration of '" + name + "' at line"
 						+ cu.getLineNumber(name.getStartPosition()));
 				return true; // do not continue 
 			}
 			
-			public boolean visit(MethodDeclaration inv) {
-				SimpleName name = inv.getName();
+			public boolean visit(MethodDeclaration method) {
+		        //IMethod iMethod = (IMethod) method.resolveBinding().getJavaElement();
+				SimpleName name = method.getName();
+				methodNames.add(name);
+				//System.out.println(name+" "+method.modifiers());
+				if(name.toString().equals("equals"))
+					for(Object e: method.modifiers())
+						if(e.toString().equals("@Override")) {
+							System.out.println("Found equals method");
+							Parser.equalsPresent = true;
+						}
+				if(name.toString().equals("hashCode")) {
+					for(Object e: method.modifiers())
+						if(e.toString().equals("@Override")) {
+							System.out.println("Found hashCode method");
+							Parser.hashCodePresent = true;
+						}
+				}
+					
 				System.out.println(name);
 				return true;
-				
 			}
  
 			public boolean visit(SimpleName node) {
@@ -157,6 +184,13 @@ public class Parser {
 			    return true; // false, if nested if statements should be ignored
 			}
 		});
+		
+		if(!Parser.hashCodePresent && Parser.equalsPresent){
+			System.out.println("HashCode method not found: The class may violate the invariant that equal objects must have equal hashcodes");
+		}
+		else{
+			System.out.println("1 ok");
+		}
  
 	}
  

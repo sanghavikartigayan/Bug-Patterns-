@@ -24,9 +24,15 @@ public class example {
 //	        	e.printStackTrace();
 	        }
 	    }
+	    
+	    @Override
 	    public void equals(){
 	    	System.out.println("hello");
 	    }
 	
+	    @Override
+	    public int hashCode(){
+	    	return 1;
+	    }
 
 }
