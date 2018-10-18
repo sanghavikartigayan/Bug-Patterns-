@@ -1,14 +1,12 @@
 public class example {
-
 	    public static void main(String[] args) {
-
 	        // Test true and false booleans.
 	        boolean value = true;
 	        if (true) {
 	            System.out.println("A");
 	        }
 	        value = false;
-	        if (!value) {
+	        if ("a" == "a") {
 	            System.out.println("B");
 	        }
 //	     	TODO Test        

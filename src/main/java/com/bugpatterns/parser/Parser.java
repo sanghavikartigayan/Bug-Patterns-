@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -21,12 +20,14 @@ import org.eclipse.jdt.core.dom.CatchClause;
 import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
-import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IfStatement;
+import org.eclipse.jdt.core.dom.InfixExpression;
+import org.eclipse.jdt.core.dom.InfixExpression.Operator;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -53,7 +54,7 @@ public class Parser {
 		
 		cu.accept(new ASTVisitor() {
 			
-			Set names = new HashSet();
+			Set<String> names = new HashSet<String>();
 			Set<SimpleName> methodNames = new HashSet<SimpleName>();
 			
 			public boolean visit(ClassDefinition node){
@@ -68,6 +69,7 @@ public class Parser {
 				return true; // do not continue 
 			}
 			
+			// Bug Pattern 1
 			public boolean visit(MethodDeclaration method) {
 		        //IMethod iMethod = (IMethod) method.resolveBinding().getJavaElement();
 				SimpleName name = method.getName();
@@ -87,8 +89,18 @@ public class Parser {
 						}
 				}
 					
-				System.out.println(name);
+				//System.out.println(name);
 				return true;
+			}
+			
+			// Bug Pattern 2
+			public boolean visit(InfixExpression node) {
+				if(node.getOperator() == Operator.EQUALS || node.getOperator() == Operator.NOT_EQUALS) {
+					System.out.println(node.getLeftOperand() instanceof StringLiteral);
+					if(node.getLeftOperand() instanceof StringLiteral && node.getRightOperand() instanceof StringLiteral)
+						System.out.println("Line Number: " + (cu.getLineNumber(node.getStartPosition())-1) + " - Consider using the equals(Object) method instead");
+				}
+			    return true;
 			}
  
 			public boolean visit(SimpleName node) {
