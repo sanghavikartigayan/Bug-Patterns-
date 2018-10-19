@@ -56,7 +56,7 @@ public class Parser {
 			
 			Set<String> names = new HashSet<String>();
 			Set<SimpleName> methodNames = new HashSet<SimpleName>();
-			
+			Set<SimpleName> invokedMethodNames=new HashSet<SimpleName>();
 			public boolean visit(ClassDefinition node){
 				return true;
 			}
@@ -92,7 +92,31 @@ public class Parser {
 				//System.out.println(name);
 				return true;
 			}
-			
+			// Bug Pattern 7
+			public boolean visit(MethodInvocation method)
+			{
+				SimpleName name=method.getName();
+				invokedMethodNames.add(name);
+				System.out.println(invokedMethodNames+"merafun");
+				for(SimpleName n: methodNames)
+				{
+					if(!invokedMethodNames.contains(n))
+					{
+						if(!isMainMethod(n))
+						{
+						System.out.println(n.toString() + " is never invoked");
+						}
+					}
+				}
+				return true;
+			}
+			public boolean isMainMethod(SimpleName n)
+			{
+				if (!"main".equals(n.toString())) {
+				      return false;
+				    }
+				return true;
+			}
 			// Bug Pattern 2
 			public boolean visit(InfixExpression node) {
 				if(node.getOperator() == Operator.EQUALS || node.getOperator() == Operator.NOT_EQUALS) {
@@ -120,6 +144,7 @@ public class Parser {
 		        int endLineNumber = cu.getLineNumber(node.getStartPosition() + node.getLength()) - 1;
 		        parseSubTree(node.getBody(), startLineNumber);
 		        checkUnfinishedExceptionHandling(startLineNumber, endLineNumber);
+		        
 				return true;				
 			}
 			
@@ -203,9 +228,10 @@ public class Parser {
 		else{
 			System.out.println("1 ok");
 		}
- 
+        
+		
 	}
- 
+   
 	//read file content into a string
 	public static String readFileToString(String filePath) throws IOException {
 		StringBuilder fileData = new StringBuilder(1000);

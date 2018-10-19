@@ -22,8 +22,10 @@ public class example {
 //	        	e.printStackTrace();
 	        }
 	    }
-	    
-	    @Override
+	    public void unUsed()
+	    {
+	    	System.out.println("This method will never be called");
+	    }
 	    public void equals(){
 	    	System.out.println("hello");
 	    }
