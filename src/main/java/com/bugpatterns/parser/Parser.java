@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.dom.InfixExpression.Operator;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.ThrowStatement;
@@ -97,7 +98,6 @@ public class Parser {
 			{
 				SimpleName name=method.getName();
 				invokedMethodNames.add(name);
-				System.out.println(invokedMethodNames+"merafun");
 				for(SimpleName n: methodNames)
 				{
 					if(!invokedMethodNames.contains(n))
@@ -139,7 +139,10 @@ public class Parser {
 				return true;				
 			}
 			
-			public boolean visit(CatchClause node) {				
+			public boolean visit(CatchClause node) {
+				SingleVariableDeclaration sd=node.getException();
+				//System.out.println(sd.getType()+"eh");
+				checkOverCatchException(node.getBody(),sd);
 				int startLineNumber = cu.getLineNumber(node.getStartPosition()) - 1;
 		        int endLineNumber = cu.getLineNumber(node.getStartPosition() + node.getLength()) - 1;
 		        parseSubTree(node.getBody(), startLineNumber);
@@ -153,6 +156,25 @@ public class Parser {
 					if(i >= startLineNumber && i <= endLineNumber) {
 						if(comments.get(i).indexOf("TODO") >= 0 || comments.get(i).indexOf("FIXME") >= 0) {
 							System.out.println("Line number: " + startLineNumber + " - Unfinished exception handling code: There's a TODO or a FIXME in the catch block");
+						}
+					}
+				}
+			}
+			//Bug Pattern 10
+			public void checkOverCatchException(Block node,SingleVariableDeclaration sd)
+			{
+				String exceptionType=sd.getType().toString();
+				if(exceptionType.equals("Exception")||exceptionType.equals("RunTimeException")||exceptionType.equals(("Throwable")))
+				{
+					for(Object s:node.statements())
+					{
+						if(s instanceof ExpressionStatement) {
+							ExpressionStatement e= (ExpressionStatement) s;
+							String expression=e.getExpression().toString();
+							if((expression.indexOf("System.exit")>=0))
+							{
+								System.out.println("Overcatching an exception");
+							}
 						}
 					}
 				}
