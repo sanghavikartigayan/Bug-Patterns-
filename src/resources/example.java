@@ -14,6 +14,7 @@ public class example {
 	        try {
 	        	System.out.print(a[5]);
 	        }
+	       
 	        catch(ArrayIndexOutOfBoundsException e) {
 	        	int i = 1;	
 //	         	FIXME Test        
@@ -21,7 +22,13 @@ public class example {
 //	        	System.out.println("Array Index out of bounds exception");
 //	        	e.printStackTrace();
 	        }
+	        catch(Throwable e)
+	        {
+	        	System.out.println("koi vi exception");
+	        	System.exit(1);
+	        }
 	    }
+	    //unUsed Method Test
 	    public void unUsed()
 	    {
 	    	System.out.println("This method will never be called");
