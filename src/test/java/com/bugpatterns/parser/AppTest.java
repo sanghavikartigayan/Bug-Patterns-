@@ -1,38 +1,26 @@
 package com.bugpatterns.parser;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.assertEquals;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+import org.junit.Test;
+public class AppTest {
+    @Test
+    public void testMain() {
+        String[] expected = new String[]{
+            "Yeah! This is a simple", "Hello World!!" }; 
+        String[] results = 
+            AbstractMainTests.executeMain("com.bugpatterns.parser.Parser", null);
+        Boolean isEmptyExceptionTest = false;
+        Boolean unfinishedExceptionTest = false;
+        for(Integer i = 0; i < results.length; i++) {
+        	if(results[i].contains("Empty Exception")) {
+        		isEmptyExceptionTest = true;
+        	}
+        	if(results[i].contains("Unfinished exception")) {
+        		unfinishedExceptionTest = true;
+        	}
+        }
+        assertEquals(isEmptyExceptionTest, true);
+        assertEquals(unfinishedExceptionTest, true);
     }
 }

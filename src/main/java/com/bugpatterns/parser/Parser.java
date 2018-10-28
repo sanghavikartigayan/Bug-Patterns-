@@ -436,9 +436,8 @@ public class Parser {
 	}
  
 	//loop directory to get file list
-	public static void ParseFilesInDir() throws IOException{
-		File dirs = new File(".");
-		System.out.println(dirs);
+	public static void ParseFilesInDir(String dir) throws IOException {
+		File dirs = new File(dir != null ? dir : "." );
 		String dirPath = dirs.getCanonicalPath() + File.separator+"src"+File.separator+"resources"+File.separator; 
 		System.out.println(dirPath);
 		File root = new File(dirPath);
@@ -455,6 +454,16 @@ public class Parser {
 	}
  
 	public static void main(String[] args) throws IOException {
-		ParseFilesInDir();
+		if(args != null) {
+			if(args.length > 1) {
+				ParseFilesInDir(args[0]);
+			}
+			else {
+				ParseFilesInDir(null);
+			}
+		}
+		else {
+			ParseFilesInDir(null);
+		}
 	}
 }
