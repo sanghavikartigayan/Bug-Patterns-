@@ -441,6 +441,9 @@ public class Parser {
 		String dirPath = dirs.getCanonicalPath() + File.separator+"src"+File.separator+"resources"+File.separator; 
 		System.out.println(dirPath);
 		File root = new File(dirPath);
+		CatchClauseStm catchClauseStm = new CatchClauseStm();
+		catchClauseStm.getTryStm(new File(dirPath));
+		catchClauseStm.getConsecutiveCatchDuplStms();
 		//System.out.println(rootDir.listFiles());
 		File[] files = root.listFiles ( );
 		String filePath = null;

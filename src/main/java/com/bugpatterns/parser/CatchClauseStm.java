@@ -2,14 +2,10 @@ package com.bugpatterns.parser;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.xml.transform.sax.SAXTransformerFactory;
 
 import com.bugpatterns.util.DirExplorer;
 import com.github.javaparser.JavaParser;
@@ -19,15 +15,13 @@ import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.github.javaparser.ast.comments.Comment;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.google.common.base.Strings;
 
 public class CatchClauseStm {
 	public static HashMap<Integer, List<CatchClause>> CatchConsutiveMap1 = new HashMap<Integer, List<CatchClause>>();
 	public static HashMap<Integer, List<CatchClause>> multiCatchwithTry = new HashMap<Integer, List<CatchClause>>();
 
-	public static void getTryStm(File projectDir) {
+	public void getTryStm(File projectDir) {
 		new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
 			System.out.println(path);
 			System.out.println(Strings.repeat("=", path.length()));
@@ -56,17 +50,17 @@ public class CatchClauseStm {
 		}).explore(projectDir);
 	}
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		 String path =  System.getProperty("user.dir");
-		 System.out.println("path "+ path);
-		File projectDir = new File("C:\\Users\\ParmjitSingh\\Desktop\\BugPatterns\\Bug5validationcode");
-		getTryStm(projectDir);
-		getConsecutiveCatchDuplStms();
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//		 String path =  System.getProperty("user.dir");
+//		 System.out.println("path "+ path);
+//		File projectDir = new File("C:\\Users\\ParmjitSingh\\Desktop\\BugPatterns\\Bug5validationcode");
+//		getTryStm(projectDir);
+//		getConsecutiveCatchDuplStms();
+//
+//	}
 
-	}
-
-	public static int getConsecutiveCatchDuplStms() {
+	public int getConsecutiveCatchDuplStms() {
 		int dupStmsCount = 0;
 		HashMap<Integer, List<CatchClause>> finalCatchBlock = new HashMap<>();
 
