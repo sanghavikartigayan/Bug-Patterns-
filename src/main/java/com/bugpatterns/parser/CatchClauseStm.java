@@ -24,8 +24,8 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.google.common.base.Strings;
 
 public class CatchClauseStm {
-	public static HashMap<Integer, List<CatchClause>> CatchConsutiveMap1 = new HashMap<>();
-	public static HashMap<Integer, List<CatchClause>> multiCatchwithTry = new HashMap<>();
+	public static HashMap<Integer, List<CatchClause>> CatchConsutiveMap1 = new HashMap<Integer, List<CatchClause>>();
+	public static HashMap<Integer, List<CatchClause>> multiCatchwithTry = new HashMap<Integer, List<CatchClause>>();
 
 	public static void getTryStm(File projectDir) {
 		new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
@@ -60,7 +60,7 @@ public class CatchClauseStm {
 		// TODO Auto-generated method stub
 		 String path =  System.getProperty("user.dir");
 		 System.out.println("path "+ path);
-		File projectDir = new File("C:\\Users\\ParmjitSingh\\Desktop\\BugPatterns-sanghavi\\BugPatterns-sanghavi\\Bug5validationcode");
+		File projectDir = new File("C:\\Users\\ParmjitSingh\\Desktop\\BugPatterns\\Bug5validationcode");
 		getTryStm(projectDir);
 		getConsecutiveCatchDuplStms();
 
