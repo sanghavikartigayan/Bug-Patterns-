@@ -1,14 +1,12 @@
 public class example {
-
 	    public static void main(String[] args) {
-
 	        // Test true and false booleans.
 	        boolean value = true;
 	        if (true) {
 	            System.out.println("A");
 	        }
 	        value = false;
-	        if (!value) {
+	        if ("a" == "a") {
 	            System.out.println("B");
 	        }
 //	     	TODO Test        
@@ -16,6 +14,7 @@ public class example {
 	        try {
 	        	System.out.print(a[5]);
 	        }
+	       
 	        catch(ArrayIndexOutOfBoundsException e) {
 	        	int i = 1;	
 //	         	FIXME Test        
@@ -23,10 +22,24 @@ public class example {
 //	        	System.out.println("Array Index out of bounds exception");
 //	        	e.printStackTrace();
 	        }
+	        catch(Throwable e)
+	        {
+	        	System.out.println("koi vi exception");
+	        	System.exit(1);
+	        }
+	    }
+	    //unUsed Method Test
+	    public void unUsed()
+	    {
+	    	System.out.println("This method will never be called");
 	    }
 	    public void equals(){
 	    	System.out.println("hello");
 	    }
 	
+	    @Override
+	    public int hashCode(){
+	    	return 1;
+	    }
 
 }
