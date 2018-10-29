@@ -44,11 +44,14 @@ public class Parser {
 	//static boolean check = false;
 	static boolean equalsPresent = false;
 	static boolean hashCodePresent = false;
+	static boolean rt = true;
+	
 	//use ASTParse to parse string
-	public static void parse(String str) {
+	public static boolean parse(String str) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource(str.toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		Parser.rt = true;
 		
 		final ArrayList<String> streamVars = new ArrayList<String>();
 		final Map<Integer, String> comments = new HashMap<Integer, String>();
@@ -191,6 +194,7 @@ public class Parser {
 								(b.getParent().getClass().getSimpleName().equals("EnhancedForStatement"))) {
 							List<Statement> statements = b.statements();
 							for(int i = 0; i < statements.size(); i++) {
+								Statement tmpSt = statements.get(i);
 								String stateName = statements.get(i).getClass().getSimpleName().toString();
 								if(stateName.equals("ExpressionStatement")) {
 									ExpressionStatement es2 = (ExpressionStatement)statements.get(i);
@@ -202,10 +206,11 @@ public class Parser {
 											break;
 										}
 									}
-									if(functionReturnVals.size() > 0) {
-										System.out.println("Possibility that the loop contains unneeded computation");
-									}
 								}
+							}
+							if(functionReturnVals.size() > 0) {
+								System.out.println("Possibility that the loop contains unneeded computation");
+								Parser.rt = false;
 							}
 						}
 					}
@@ -227,6 +232,7 @@ public class Parser {
 					System.out.println(node.getLeftOperand() instanceof StringLiteral);
 					if(node.getLeftOperand() instanceof StringLiteral && node.getRightOperand() instanceof StringLiteral)
 						System.out.println("Line Number: " + (cu.getLineNumber(node.getStartPosition())-1) + " - Consider using the equals(Object) method instead");
+					Parser.rt = false;
 				}
 			    return true;
 			}
@@ -295,6 +301,7 @@ public class Parser {
 							if((expression.indexOf("System.exit")>=0))
 							{
 								System.out.println("Overcatching an exception");
+								Parser.rt = false;
 							}
 						}
 					}
@@ -355,6 +362,7 @@ public class Parser {
 							SimpleName sn = (SimpleName) expr.getRightOperand();
 							if(variablesDeclarations.containsKey(sn.toString()) == true) {
 								System.out.println("Possibility that this condition has no effect");
+								Parser.rt = false;
 								condCheckFlag = true;
 							}
 						}
@@ -362,6 +370,7 @@ public class Parser {
 				}
 				else if(node.getExpression().getClass().getSimpleName().equals("BooleanLiteral") == true) {
 					System.out.println("Possibility that this condition has no effect");
+					Parser.rt = false;
 				}
 				else if(node.getExpression().getClass().getSimpleName().equals("PrefixExpression") == true) {
 					PrefixExpression pe = (PrefixExpression) node.getExpression();
@@ -369,6 +378,7 @@ public class Parser {
 						SimpleName se = (SimpleName) pe.getOperand();
 						if(variablesDeclarations.containsKey(se.toString())) {
 							System.out.println("Possibility that this condition has no effect");
+							Parser.rt = false;
 						}
 					}
 				}
@@ -404,6 +414,7 @@ public class Parser {
 		
 		if(!Parser.hashCodePresent && Parser.equalsPresent){
 			System.out.println("HashCode method not found: The class may violate the invariant that equal objects must have equal hashcodes");
+			Parser.rt = false;
 		}
 		else{
 			System.out.println("1 ok");
@@ -412,7 +423,10 @@ public class Parser {
 		// Bug Pattern 3
 		if(streamVars.size() > 0) {
 			System.out.println("Possibility of stream left opened");
+			Parser.rt = false;
 		}
+		
+		return Parser.rt;
 	}
    
 	//read file content into a string
