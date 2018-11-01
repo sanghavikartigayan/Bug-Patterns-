@@ -1,14 +1,14 @@
 public class example {
 	    public static void main(String[] args) {
 	        // Test true and false booleans.
-	    	String a = "a";
+	    	String c = "a";
 	    	String b = "b";
 	        boolean value = true;
 	        if (true) {
 	            System.out.println("A");
 	        }
 	        value = false;
-	        if ("a" == b) {
+	        if ("a" == "n") {
 	            System.out.println("B");
 	        }
 //	     	TODO Test        

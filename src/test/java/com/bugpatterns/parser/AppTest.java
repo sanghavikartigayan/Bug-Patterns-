@@ -71,6 +71,25 @@ public class AppTest {
     }
     
     @Test
+    public void testStringEquals2() {
+    	String fileContent = "public class abc {\n" +
+    			"public void fun() {\n" +
+    				"String a = \"a\"" +
+    				"if (a == \"a\") {return;}\n" +
+    				"}\n" +
+    			"}";
+    	boolean result = true;
+		try {
+	    	result = Parser.parse(fileContent);
+	    	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		assertFalse(result);	
+    }
+    
+    @Test
     public void methodDeclaration() {
     	String fileContent = "public class abc {\n" +
     			"public static void main(String[] args) {System.out.println();}\n" +
