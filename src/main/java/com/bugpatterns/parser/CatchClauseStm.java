@@ -18,6 +18,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.google.common.base.Strings;
 
 public class CatchClauseStm {
+	//Bug Pattern 5
 	public static HashMap<Integer, List<CatchClause>> CatchConsutiveMap1 = new HashMap<Integer, List<CatchClause>>();
 	public static HashMap<Integer, List<CatchClause>> multiCatchwithTry = new HashMap<Integer, List<CatchClause>>();
 
