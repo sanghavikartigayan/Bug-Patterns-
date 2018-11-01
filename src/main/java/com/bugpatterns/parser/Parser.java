@@ -229,9 +229,9 @@ public class Parser {
 			// Bug Pattern 2
 			public boolean visit(InfixExpression node) {
 				if(node.getOperator() == Operator.EQUALS || node.getOperator() == Operator.NOT_EQUALS) {
-					System.out.println(node.getRightOperand().toString().equals("null"));
+					//System.out.println(node.getRightOperand().toString().equals("null"));
 					if((! node.getRightOperand().toString().equals("null") && ! node.getRightOperand().equals("null")) && (node.getLeftOperand().getClass().getName() instanceof String) && (node.getRightOperand().getClass().getName() instanceof String))
-						System.out.println("Line Number: " + (cu.getLineNumber(node.getStartPosition())-1) + " - Consider using the equals(Object) method instead");
+						System.out.println("Line Number: " + (cu.getLineNumber(node.getStartPosition())) + " - Consider using the equals(Object) method instead");
 					Parser.rt = false;
 				}
 			    return true;
