@@ -362,7 +362,8 @@ public class Parser {
 						if(expr.getRightOperand().getClass().getSimpleName().toString().equals("SimpleName")) {
 							SimpleName sn = (SimpleName) expr.getRightOperand();
 							if(variablesDeclarations.containsKey(sn.toString()) == true) {
-								System.out.println("Possibility that this condition has no effect");
+								System.out.println("Bug Pattern found: UC_USELESS_CONDITION");
+								System.out.println("Expression: " + node.getExpression() + ", Line Number: " + cu.getLineNumber(node.getStartPosition()) + " - Possibility that this condition has no effect");
 								Parser.rt = false;
 								condCheckFlag = true;
 							}
@@ -370,7 +371,8 @@ public class Parser {
 					}
 				}
 				else if(node.getExpression().getClass().getSimpleName().equals("BooleanLiteral") == true) {
-					System.out.println("Possibility that this condition has no effect");
+					System.out.println("Bug Pattern found: UC_USELESS_CONDITION");
+					System.out.println("Expression: " + node.getExpression() + ", Line Number: " + cu.getLineNumber(node.getStartPosition()) + " - Possibility that this condition has no effect");
 					Parser.rt = false;
 				}
 				else if(node.getExpression().getClass().getSimpleName().equals("PrefixExpression") == true) {
@@ -378,7 +380,8 @@ public class Parser {
 					if(pe.getOperand().getClass().getSimpleName().equals("SimpleName") == true) {
 						SimpleName se = (SimpleName) pe.getOperand();
 						if(variablesDeclarations.containsKey(se.toString())) {
-							System.out.println("Possibility that this condition has no effect");
+							System.out.println("Bug Pattern found: UC_USELESS_CONDITION");
+							System.out.println("Expression: " + node.getExpression() + ", Line Number: " + cu.getLineNumber(node.getStartPosition()) + " - Possibility that this condition has no effect");
 							Parser.rt = false;
 						}
 					}
@@ -457,9 +460,9 @@ public class Parser {
 		String dirPath = dirs.getCanonicalPath() + File.separator+"src"+File.separator+"resources"+File.separator; 
 		System.out.println(dirPath);
 		File root = new File(dirPath);
-		CatchClauseStm catchClauseStm = new CatchClauseStm();
-		catchClauseStm.getTryStm(new File(dirPath));
-		catchClauseStm.getConsecutiveCatchDuplStms();
+//		CatchClauseStm catchClauseStm = new CatchClauseStm();
+//		catchClauseStm.getTryStm(new File(dirPath));
+//		catchClauseStm.getConsecutiveCatchDuplStms();
 		//System.out.println(rootDir.listFiles());
 		File[] files = root.listFiles ( );
 		String filePath = null;
