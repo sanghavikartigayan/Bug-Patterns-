@@ -70,7 +70,7 @@ public class AppTest {
 		
 		assertFalse(result);	
     }
-    
+//Bug pattern 2
     @Test
     public void testStringEquals2() {
     	String fileContent = "public class abc {\n" +
