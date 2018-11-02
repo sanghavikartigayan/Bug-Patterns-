@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
 public class example {
 	    public static void main(String[] args) {
 	        // Test true and false booleans.
@@ -45,6 +49,7 @@ public class example {
 	    }
 
 }
+
 public class testClass1
 {
 	public void fun() throws FileNotFoundException 
