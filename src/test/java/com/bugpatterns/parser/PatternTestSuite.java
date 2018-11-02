@@ -10,5 +10,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({CatchStmTest.class, AppTest.class})
 public class PatternTestSuite {
-
+   
+  
 }
