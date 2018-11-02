@@ -160,7 +160,8 @@ public class Parser {
 					{
 						if(!isMainMethod(n))
 						{
-						System.out.println(n.toString() + " is never invoked");
+							System.out.println("Found Bug Pattern: Unused Methods");
+							System.out.println("Line Number: "+(cu.getLineNumber(n.getStartPosition())) + " "+ n.toString() +" is not invoked anywhere within project");
 						}
 					}
 				}
@@ -299,7 +300,8 @@ public class Parser {
 							String expression=e.getExpression().toString();
 							if((expression.indexOf("System.exit")>=0))
 							{
-								System.out.println("Overcatching an exception");
+								System.out.println("Found Bug Pattern: Over-catching an exception with system-termination");
+								System.out.println("Line Number: "+(cu.getLineNumber(node.getStartPosition())) + " Donot terminate system when catching very high level exceptions");
 								Parser.rt = false;
 							}
 						}
