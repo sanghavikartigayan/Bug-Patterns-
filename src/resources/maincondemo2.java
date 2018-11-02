@@ -1,5 +1,5 @@
 
-public class maincondemo {
+public class maincondemo2 {
 
 	public static void main(String[] args) throws ClassNotFoundException {
 
@@ -11,8 +11,13 @@ public class maincondemo {
 				System.out.println("Try2");
 			} catch (ArithmeticException e) {
 
-				//System.out.println("Catch----1");
+				System.out.println("Catch----1");
+			}catch (ArrayIndexOutOfBoundsException e) {
+
+				System.out.println("Catch----1");
+				System.out.println("Catch----2");
 			}
+			
 
 			catch (Exception e) {
 
@@ -20,15 +25,12 @@ public class maincondemo {
 
 			}
 		} catch (ArithmeticException e) {
-			System.out.println("****************This is catch Block****************");
-			System.out.println("Catch----5");
+			System.out.println("file2");
 			System.out.println("Catch----3");
 
-		} 
-		catch (NullPointerException e) {			
-			System.out.println("Catch----5");
+		} catch (NullPointerException e) {
+			System.out.println("file2");
 			System.out.println("Catch----3");
-			System.out.println("****************This is catch Block****************");
 		} finally {
 			try {
 				System.out.println("Try3 inside Finally1");
