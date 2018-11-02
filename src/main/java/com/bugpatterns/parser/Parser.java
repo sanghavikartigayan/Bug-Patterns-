@@ -131,27 +131,24 @@ public class Parser {
 			
 			// Bug Pattern 1
 			public boolean visit(MethodDeclaration method) {
-		        //IMethod iMethod = (IMethod) method.resolveBinding().getJavaElement();
 				SimpleName name = method.getName();
 				methodNames.add(name);
-				//System.out.println(name+" "+method.modifiers());
 				if(name.toString().equals("equals"))
 					for(Object e: method.modifiers())
 						if(e.toString().equals("@Override")) {
-							System.out.println("Found equals method");
+							// "Found equals method"
 							Parser.equalsPresent = true;
 						}
 				if(name.toString().equals("hashCode")) {
 					for(Object e: method.modifiers())
 						if(e.toString().equals("@Override")) {
-							System.out.println("Found hashCode method");
+							// "Found hashCode method"
 							Parser.hashCodePresent = true;
 						}
 				}
-					
-				//System.out.println(name);
 				return true;
 			}
+			
 			// Bug Pattern 7, 6
 			public boolean visit(MethodInvocation method)
 			{
@@ -229,9 +226,10 @@ public class Parser {
 			// Bug Pattern 2
 			public boolean visit(InfixExpression node) {
 				if(node.getOperator() == Operator.EQUALS || node.getOperator() == Operator.NOT_EQUALS) {
-					//System.out.println(node.getRightOperand().toString().equals("null"));
-					if((! node.getRightOperand().toString().equals("null") && ! node.getRightOperand().equals("null")) && (node.getLeftOperand().getClass().getName() instanceof String) && (node.getRightOperand().getClass().getName() instanceof String))
+					if((! node.getRightOperand().toString().equals("null") && ! node.getRightOperand().equals("null")) && (node.getLeftOperand().getClass().getName() instanceof String) && (node.getRightOperand().getClass().getName() instanceof String)) {
+						System.out.println("Bug Pattern found: ES_COMPARING_STRINGS_WITH_EQ");
 						System.out.println("Line Number: " + (cu.getLineNumber(node.getStartPosition())) + " - Consider using the equals(Object) method instead");
+					}
 					Parser.rt = false;
 				}
 			    return true;
@@ -287,6 +285,7 @@ public class Parser {
 					}
 				}
 			}
+			
 			//Bug Pattern 10
 			public void checkOverCatchException(Block node,SingleVariableDeclaration sd)
 			{
@@ -413,6 +412,7 @@ public class Parser {
 		});
 		
 		if(!Parser.hashCodePresent && Parser.equalsPresent){
+			System.out.println("Bug Pattern found: HE_EQUALS_NO_HASHCODE");
 			System.out.println("HashCode method not found: The class may violate the invariant that equal objects must have equal hashcodes");
 			Parser.rt = false;
 		}
