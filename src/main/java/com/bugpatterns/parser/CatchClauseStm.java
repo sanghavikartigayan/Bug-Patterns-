@@ -2,6 +2,7 @@ package com.bugpatterns.parser;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -19,14 +20,15 @@ import com.google.common.base.Strings;
 
 public class CatchClauseStm {
 	//Bug Pattern 5
-	public static HashMap<Integer, List<CatchClause>> CatchConsutiveMap1 = new HashMap<Integer, List<CatchClause>>();
-	public static HashMap<Integer, List<CatchClause>> multiCatchwithTry = new HashMap<Integer, List<CatchClause>>();
-
-	public void getTryStm(File projectDir) {
+	static int errorcount = 0;
+	public static int getDupCatchStm(File projectDir) {
+		
 		new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
 			System.out.println(path);
 			System.out.println(Strings.repeat("=", path.length()));
 			try {
+				HashMap<Integer, List<CatchClause>> CatchConsutiveMap1 = new HashMap<Integer, List<CatchClause>>();
+				int errorcountOneFile =0;
 				new VoidVisitorAdapter<Object>() {
 					@Override
 					public void visit(TryStmt n, final Object arg) { // TryStmt
@@ -43,33 +45,67 @@ public class CatchClauseStm {
 					}
 
 				}.visit(JavaParser.parse(file), null);
+				errorcountOneFile =getConsecutiveCatchDuplStms(CatchConsutiveMap1);
+				errorcount = errorcountOneFile+errorcount;
 				System.out.println(); // empty line
+				
 			} catch (ParseException | IOException e) {
 
 				new RuntimeException(e);
 			}
 		}).explore(projectDir);
+		return errorcount;
 	}
 
-//	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 //		// TODO Auto-generated method stub
-//		 String path =  System.getProperty("user.dir");
-//		 System.out.println("path "+ path);
-//		File projectDir = new File("C:\\Users\\ParmjitSingh\\Desktop\\BugPatterns\\Bug5validationcode");
-//		getTryStm(projectDir);
-//		getConsecutiveCatchDuplStms();
-//
-//	}
+		 String path =  System.getProperty("user.dir");
+	 System.out.println("path "+ path);
+	File projectDir = new File("C:\\Users\\iNdZ\\Documents\\workspace\\Misc-workspace\\BugPatterns-master\\src\\resources");
+	getTryStm(projectDir);
+		
 
-	public int getConsecutiveCatchDuplStms() {
-		int dupStmsCount = 0;
-		HashMap<Integer, List<CatchClause>> finalCatchBlock = new HashMap<>();
+}*/
 
+	public static int getConsecutiveCatchDuplStms(HashMap<Integer, List<CatchClause>> CatchConsutiveMap1) {
+		int dupStmsCount = 0;	
+		
+		//remove empty statment 
 		for (Entry<Integer, List<CatchClause>> entry1 : CatchConsutiveMap1.entrySet()) {
-
+			//----
+			if(entry1.getValue().size()>1) {
+				
+				//System.out.println("values: "+entry1.getKey()  + " work "+entry1.getValue());
+				
+				List<CatchClause> lstCatch = new ArrayList<CatchClause>();
+				lstCatch = entry1.getValue();
+				
+				//System.out.println("get list value : "+lstCatch);
+				
+				for (int i = 0; i < lstCatch.size(); i++) {
+					
+					CatchClause testCatch = lstCatch.get(i);
+					List<Statement> statements = new ArrayList<Statement>();
+					statements = testCatch.getCatchBlock().getStmts();
+					
+					if(statements == null) {
+						//System.out.println("Null Statement");
+						entry1.getValue().remove(i);
+					}
+					else {
+						//System.out.println("NOT Null Statement "+testCatch);
+						
+					}
+				}
+			}
+		}
+		HashMap<Integer, List<CatchClause>> multiCatchwithTry = new HashMap<Integer, List<CatchClause>>();
+		for (Entry<Integer, List<CatchClause>> entry1 : CatchConsutiveMap1.entrySet()) {
+			
 			if (entry1.getValue().size() > 1) {
 				// System.out.println("Campare map :::: "+CatchConsutiveMap1);	
-				int size = entry1.getValue().size();				
+				int size = entry1.getValue().size();	
+				
 				multiCatchwithTry.put(entry1.getKey(), entry1.getValue());	
 				
 			}
@@ -109,8 +145,10 @@ public class CatchClauseStm {
 								dupStmsCount = dupStmsCount + 1;
 
 							}
+							
 
 						}
+						
 
 					}
 				}
