@@ -34,7 +34,7 @@ public class AppTest {
     }
     */
 	
-	
+	//Bug Pattern 1
     @Test
     public void testEqualsHashCodeMethod() {
     	String fileContent = "public class abc {\n" +
@@ -52,6 +52,7 @@ public class AppTest {
 		assertFalse(result);
     }
 	
+//Bug pattern 2	
     @Test
     public void testStringEquals() {
     	String fileContent = "public class abc {\n" +
@@ -89,6 +90,7 @@ public class AppTest {
 		assertFalse(result);	
     }
     
+	//Bug pattern 7
     @Test
     public void methodDeclaration() {
     	String fileContent = "public class abc {\n" +
@@ -108,6 +110,7 @@ public class AppTest {
 		assertFalse(result);
     }
     
+	//Bug pattern 6
     @Test
     public void unneededComputation() {
     	String fileContent = "public class abc {\n" +
@@ -128,6 +131,7 @@ public class AppTest {
 		assertFalse(result);	
     }
     
+	//Bug pattern 4
     @Test
     public void conditionHasNoEffect() {
     	String fileContent = "public class abc {\n" +
@@ -145,7 +149,7 @@ public class AppTest {
 		
 		assertFalse(result);	
     }
-    
+    // Bug pattern 3
     @Test
     public void failToCloseStream() {
     	String fileContent = "public class abc {\n" +
@@ -164,7 +168,7 @@ public class AppTest {
 		
 		assertFalse(result);
     }
-    
+    //Bug pattern 10
     @Test
     public void catchSystemTermination() {
     	String fileContent = "public class abc {\n" +
