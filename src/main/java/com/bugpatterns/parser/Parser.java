@@ -207,7 +207,8 @@ public class Parser {
 								}
 							}
 							if(functionReturnVals.size() > 0) {
-								System.out.println("Possibility that the loop contains unneeded computation");
+								System.out.println("Bug Pattern found:Unneeded computation in loops.");
+								System.out.println("Expression: " + node.getExpression() + ", Line Number: " + cu.getLineNumber(node.getStartPosition()) + " Possibility that the loop contains unneeded computation");
 								Parser.rt = false;
 							}
 						}
@@ -427,7 +428,7 @@ public class Parser {
         
 		// Bug Pattern 3
 		if(streamVars.size() > 0) {
-			System.out.println("Possibility of stream left opened");
+			System.out.println("Expression: " + node.getExpression() + ", Line Number: " + cu.getLineNumber(node.getStartPosition()) + "Possibility of stream left opened");
 			Parser.rt = false;
 		}
 		
