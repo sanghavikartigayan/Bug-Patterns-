@@ -43,7 +43,24 @@ public class AppTest {
 		
 		assertFalse(result);
     }
-	
+//Bug pattern 1
+@Test
+    public void testEqualsHashCodeMethods() {
+    	String fileContent = "public class abc {\n" +
+    			"@Override\n" +
+    			"public void equals() {return;}\n" +
+    			"public void hashCode() {return;}\n" +
+    			"}";
+    	boolean result = true;
+		try {
+	    	result = Parser.parse(fileContent);
+	    	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		assertFalse(result);
+    }
 //Bug pattern 2	
     @Test
     public void testStringEquals() {
