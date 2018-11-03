@@ -264,7 +264,7 @@ public class Parser {
 				}
 				return true;				
 			}
-			
+			//Bug pattern 9
 			public boolean visit(CatchClause node) {
 				SingleVariableDeclaration sd=node.getException();
 				//System.out.println(sd.getType()+"eh");
@@ -309,6 +309,7 @@ public class Parser {
 				}
 			}
 			
+			//Bug pattern 8
 			public boolean parseSubTree(Block node, int startLineNumber) {
 				boolean isEmptyException = true;
 				for(Object s : node.statements()) {
